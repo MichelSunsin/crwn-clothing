@@ -28,7 +28,7 @@ $main-color: black;
       outline: none;
     }
 
-    &:focus ~ .form-input-label {
+    &:focus ~ .form-input-label:not(.shrink) {
       @include shrinkLabel();
     }
   }
@@ -46,5 +46,9 @@ $main-color: black;
     left: 5px;
     top: 10px;
     transition: 300ms ease all;
+
+    &.shrink {
+      @include shrinkLabel();
+    }
   }
 }

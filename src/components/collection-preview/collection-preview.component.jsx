@@ -1,4 +1,4 @@
-import CollectionItem from '../collection-item/collection-item.component';
+import CollectionItem from 'components/collection-item/collection-item.component';
 import './collection-preview.styles.scss';
 
 const CollectionPreview = props => {

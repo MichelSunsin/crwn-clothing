@@ -1,8 +1,9 @@
 import { Component } from 'react';
-import FormInput from '../form-input/form-input.component';
-import CustomButton from '../custom-button/custom-button.component';
-import { signInWithGoogle } from '../../firebase/firebase.utils';
+import FormInput from 'components/form-input/form-input.component';
+import CustomButton from 'components/custom-button/custom-button.component';
+import { auth, signInWithGoogle } from 'firebase/firebase.utils';
 import './sign-in.styles.scss';
+import { toast } from 'react-toastify';
 
 export default class SignIn extends Component {
   constructor() {
@@ -11,6 +12,7 @@ export default class SignIn extends Component {
     this.state = {
       email: '',
       password: '',
+      isLoading: false,
     };
   }
 
@@ -19,9 +21,19 @@ export default class SignIn extends Component {
     this.setState({ [name]: value });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.setState({ email: '', password: '' });
+  handleSubmit = async event => {
+    event.preventDefault();
+
+    const { email, password } = this.state;
+
+    try {
+      this.setState({ isLoading: true });
+      await auth.signInWithEmailAndPassword(email, password);
+    } catch (error) {
+      toast.error(error.message, { position: 'top-center' });
+    } finally {
+      this.setState({ email: '', password: '', isLoading: false });
+    }
   };
 
   render() {
@@ -48,8 +60,15 @@ export default class SignIn extends Component {
             required
           />
           <div className='buttons'>
-            <CustomButton type='submit'>Sign in</CustomButton>
-            <CustomButton onClick={signInWithGoogle} isGoogleSignIn>
+            <CustomButton type='submit' isLoading={this.state.isLoading}>
+              Sign in
+            </CustomButton>
+            <CustomButton
+              type='button'
+              isLoading={this.state.isLoading}
+              onClick={signInWithGoogle}
+              isGoogleSignIn
+            >
               Sign in with Google
             </CustomButton>
           </div>
